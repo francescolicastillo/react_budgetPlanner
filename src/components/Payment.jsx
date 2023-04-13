@@ -1,4 +1,12 @@
 import React from 'react'
+import {
+    LeadingActions,
+    SwipeableList,
+    SwipeableListItem,
+    SwipeAction,
+    TrailingActions,
+} from 'react-swipeable-list'
+import "react-swipeable-list/dist/styles.css"
 
 import IconFood from '../img/icon_food.svg'
 import IconHobbies from '../img/icon_hobbies.svg'
@@ -18,7 +26,7 @@ const enumIcons = {
     subscriptions : IconSubscriptions
 }
 
-const Payment = ({payment}) => {
+const Payment = ({payment, setStatePayment, deletePayment}) => {
 
     const dateFormat = date => {
         const format = {
@@ -29,29 +37,56 @@ const Payment = ({payment}) => {
         const newDate = new Date(date);
         return newDate.toLocaleDateString('en-US',format);
     };
+    
+    const leadingActions = () => (
+        <LeadingActions>
+            <SwipeAction 
+                onClick={() => setStatePayment(payment)} >
+                Edit
+            </SwipeAction>
+        </LeadingActions>
+    )
+    
+    const trailingActions = () => (
+        <TrailingActions>
+            <SwipeAction 
+                onClick={() => deletePayment(payment)}
+                destructive={true}
+            >
+                Delete
+            </SwipeAction>
+        </TrailingActions>
+    )
 
     return (
-        <div className='expense shadow'>
-            <div className='content-expense'>
-                <img 
-                    src={enumIcons[payment.category]}
-                    alt="Payment's Icon"
-                />
-                <div className='description-expense'>
-                    <p className='category'>
-                        {payment.category}
-                    </p>
-                    <p className='name-expense'>
-                        {payment.name}
-                    </p>                
-                    <p className='date-expense'>
-                        Added: {' '}
-                        {dateFormat(payment.date)}
-                    </p>
+        <SwipeableList>
+            <SwipeableListItem
+                leadingActions={leadingActions()}
+                trailingActions={trailingActions()}
+            >
+                <div className='expense shadow'>
+                    <div className='content-expense'>
+                        <img 
+                            src={enumIcons[payment.category]}
+                            alt="Payment's Icon"
+                        />
+                        <div className='description-expense'>
+                            <p className='category'>
+                                {payment.category}
+                            </p>
+                            <p className='name-expense'>
+                                {payment.name}
+                            </p>                
+                            <p className='date-expense'>
+                                Added: {' '}
+                                {dateFormat(payment.date)}
+                            </p>
+                        </div>
+                    </div>
+                    <p className='amount-expense'>€{payment.amount}</p>
                 </div>
-            </div>
-            <p className='amount-expense'>€{payment.amount}</p>
-        </div>
+            </SwipeableListItem>
+        </SwipeableList>
     )
 }
 

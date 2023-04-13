@@ -1,9 +1,16 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import Message from './Message'
 import IconClose from '../img/close.svg'
 
 
-const Modal = ({setModal, formModal, setFormModal, savePayment}) => {
+const Modal = ({
+    setModal, 
+    formModal, 
+    setFormModal, 
+    savePayment, 
+    statePayment,
+    setStatePayment
+}) => {
 
     const [name, setName] = useState("");
     const [amount, setAmount] = useState("");
@@ -13,6 +20,7 @@ const Modal = ({setModal, formModal, setFormModal, savePayment}) => {
     const handleModal = () => {
         setTimeout(() => {
             setModal(false);
+            setStatePayment({});
         }, 400)
     }
     
@@ -21,6 +29,7 @@ const Modal = ({setModal, formModal, setFormModal, savePayment}) => {
         const date = Date.now().toString(36);
         return random + date;
     }
+
     const handleSubmit = e => {
         e.preventDefault();
         if([name, amount,category].includes("")){
@@ -30,12 +39,20 @@ const Modal = ({setModal, formModal, setFormModal, savePayment}) => {
             }, 2500);
             return;
         }
-        let id = generateId();
+        let id = statePayment.id ? statePayment.id : generateId();
         const date = Date.now();
         savePayment({id, name, amount, category, date});
         setFormModal(false);
         handleModal();
     }
+
+    useEffect(() => {
+        if(Object.keys(statePayment).length > 0){
+            setName(statePayment.name);
+            setAmount(statePayment.amount);
+            setCategory(statePayment.category);
+        }
+    }, [statePayment])
 
     return (
         <div className="modal">
@@ -50,7 +67,7 @@ const Modal = ({setModal, formModal, setFormModal, savePayment}) => {
                 onSubmit={handleSubmit}
                 className={`form ${formModal ? "animate" : "close"}`}
             >
-                <legend>New payment</legend>
+                <legend>{ Object.keys(statePayment).length > 0 ? 'Edit payment' : 'New payment'}</legend>
                 {message && <Message
                     type="error"
                 >{message}</Message>}
@@ -96,7 +113,7 @@ const Modal = ({setModal, formModal, setFormModal, savePayment}) => {
                         <option value="subscriptions">Subscriptions</option>
                     </select>
                 </div>
-                <input type="submit" value="Add payment"/>
+                <input type="submit" value={Object.keys(statePayment).length > 0 ? 'Save changes':'Add payment'}/>
             </form>
         </div>
     )

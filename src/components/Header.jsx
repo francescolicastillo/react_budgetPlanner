@@ -7,7 +7,8 @@ const Header = ({
   setBudget, 
   isValidBudget, 
   setIsValidBudget,
-  payments
+  payments,
+  setPayments
 }) => {
 
   return (
@@ -17,7 +18,10 @@ const Header = ({
         {isValidBudget ? (
             <ControllerBudget 
               budget={budget}
+              setBudget={setBudget}
               payments={payments}
+              setPayments={setPayments}
+              setIsValidBudget={setIsValidBudget}
             />
           ) : (
             <NewBudget 
@@ -27,11 +31,8 @@ const Header = ({
             />
           )
         }  
-
-        
     </header>
   )
-
 }
 
 export default Header;
